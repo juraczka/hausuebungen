@@ -1,0 +1,14 @@
+Aufgabe) jQuery Plugin - Bildtext
+
+Erstellen Sie ein eigenes jQuery-Plugin, welches bei ausgewählten Bildern
+Texte (Bildunterschrift, ausgelesehen aus dem alt-Attribute)
+über dem Bild einblendet, wenn der User auf das Bild klickt.
+
+Mittels Optionen sollen Bilder unten oder oben eingeblendet werden können.
+
+Beispiel:
+<img src="meinbild.jpg" alt="Das ist der Bildtext">
+$( 'img' ).bildtext();
+
+Zusatzaufgabe:
+- unterschiedliche Animationseffekte

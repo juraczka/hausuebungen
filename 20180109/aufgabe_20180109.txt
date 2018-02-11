@@ -1,0 +1,18 @@
+Projekt)
+Kurze Beschreibung einer Projekt-Idee für Abschlussprojekt.
+Anforderungen lt. Word-doctype
+
+Aufgabe)
+Erstelle eine Schnittstellen-Doku für eine TODO-Verwaltung.
+Es sollen Aufgaben erstellt/gespeichert werden.
+Es müssen Aufgaben erledigt markiert werden.
+Liste sollte nach Datum und/oder Priorität sortiert werden können.
+Aufgaben können editiert und gelöscht werden.
+
+Aufgaben bestehen aus (Beispiel):
+- Titel
+- Text
+- Priorität (1-10)
+- Erstellungsdatum
+- Datum zu erledigen
+usw.

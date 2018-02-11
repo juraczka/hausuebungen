@@ -1,0 +1,19 @@
+Aufgabe) Lotto 6 aus 45 
+
+Der Benutzer kann 1-10 Tipps (Auswahl) abgegeben.
+Pro Tipp erscheint eine Tabelle mit den Zahlen 1 bis 45
+(Tabelle mit 6 Spalten).
+Benutzer kann pro Tipp genau 6 Zahlen auswählen (werden
+markiert, zB andere Hintergrundfarbe).
+Wenn alle Tipps ausgefüllt sind, erscheint ein Button mit
+dem die Ziehung (zufällige Ermittlung von 6 Zahlen)
+gestartet wird.
+
+Die gezogenen Zahlen werden hervorgehoben und es
+erscheint pro Tipp, wieviele man erraten hat (oder eine
+Gesamtübersicht).
+
+Zusatzaufgabe:
+- Ziehung mit Zusatzzahl
+- Tipps können gespeichert werden (localStorage)
+- mehrere Ziehungen simmulieren

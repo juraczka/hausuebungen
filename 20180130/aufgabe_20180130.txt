@@ -1,0 +1,14 @@
+Aufgabe 6)
+ToDo-Applikation (Server)
+Anm.: Basierend auf der erstellen Schnittstellen-Doku
+
+Daten für ToDo-Applikation werden am Server (NodeJS) in
+einem JSON-File gespeichert.
+Mit definierten Requests können Daten abgefragt, gespeichert,
+geändert und gelöscht werden.
+
+Requests werden wie in Schnittstellenbeschreibung definierten abgearbeitet.
+
+Zusatzaufgabe:
+- Filterfunktion: gefilterte Daten werden dem Client
+zurückgegeben, nicht alle Daten immer übertragen

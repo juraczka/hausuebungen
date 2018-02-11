@@ -1,0 +1,19 @@
+Aufgabe 1)
+Berechne den Body-Mass-Index (BMI)
+Eingabe Größe in cm
+Eingabe Gewicht in kg (Kommazahlen erlauben)
+BMI = kg / m²
+Ausgabe des Wertes als Text (gerundet auf 3 Kommastellen)
+Ausgabe in Grafik als X (bmi_tabelle.gif)
+
+Zusatzaufgabe:
+Alters und Geschlechtsabhängigkeit
+(siehe https://de.wikipedia.org/wiki/Body-Mass-Index)
+
+Aufgabe 2) freiwillige Übung
+Zahl raten mit unterschiedlichen Schwierigkeiten
+1-10
+1-25
+1-50
+Beim Start zum Auswählen, oder wenn man gewinnt wird es
+schwieriger ansonsten leichter...
