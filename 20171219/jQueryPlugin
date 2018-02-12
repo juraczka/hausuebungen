@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+
+	<title>Tag1: Addieren</title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+	<script>
+
+;( function ( $ ) {
+	$.fn.flip = function( options ) {
+		var settings = $.extend({
+		}, options);
+		// jquery Element von dem flip aufgerufen wird
+		return this.each( function() {
+				// this => HTML Node Element, Schleife each
+				$(this).on('mouseenter', function() {
+					// this => html Node Element vom EventListener
+					$(this).css( { 'transform':'scale(-1,1)'} )
+				});
+				$(this).on('mouseleave', function() {
+					$(this).css( { 'transform':'scale(1,1)'} )
+				});
+		});
+	}
+
+}( jQuery ));
+
+	</script>
+	<script>
+		$(document).ready( function() {
+			// $('img:first-child').flip();
+			$('img').flip();
+		});
+	</script>
+	<style>
+
+	</style>
+</head>
+<body>
+	<img src="bilder/000.jpg">
+	<img src="bilder/001.jpg">
+	<img src="bilder/002.jpg">
+	<img src="bilder/003.jpg">
+</body>
+</html>
