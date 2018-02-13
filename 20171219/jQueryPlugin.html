@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+
+	<title>Aufgabe_20171219</title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+	<script>
+
+;( function ( $ ) {
+	$.fn.bildtext = function( options ) {
+		var settings = $.extend({
+			position:'after'
+		}, options);
+		// jquery Element von dem bildtext aufgerufen wird
+		return this.each( function() {
+				// this => HTML Node Element, Schleife each
+				$(this).on('mouseenter', function() {
+					// this => html Node Element vom EventListener
+					var alt = $( this ).attr('alt');
+					if ( settings.position == 'after' ) {
+						$(this).after( '<span id="x">'+alt+'</span>' );
+					};
+					if ( settings.position == 'before' ) {
+						$(this).before( '<span id="x">'+alt+'</span>' );
+					};
+					//$(this).css( { 'transform':'scale(-1,1)'} )
+				});
+				$(this).on('mouseleave', function() {
+					$('#x').remove();
+					//$(this).css( { 'transform':'scale(1,1)'} )
+				});
+		});
+
+	}
+}( jQuery ));
+
+	</script>
+	<script>
+		$(document).ready( function() {
+			// $('img:first-child').bildtext();
+			$('img:first').bildtext({position:'before'});
+			$('img:nth-child(2)').bildtext({position:'before'});
+			$('img:nth-child(3)').bildtext({position:'after'});
+			$('img:last').bildtext({position:'after'});
+		});
+	</script>
+	<style>
+
+	</style>
+</head>
+<body>
+	<img src="bilder/000.jpg" alt="Bild-0">
+	<img src="bilder/001.jpg" alt="Bild-1">
+	<img src="bilder/002.jpg" alt="Bild-2">
+	<img src="bilder/003.jpg" alt="Bild-3">
+</body>
+</html>
