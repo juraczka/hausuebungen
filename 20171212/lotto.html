@@ -6,22 +6,39 @@
 	<script src="jquery-3.2.1.min.js"></script>
 	<script>
 
-var erzeugeTippTabellen = function(){
-	var td, tr, table = $('<table>');
-	for (var i = 1; i < 46; i++) {
-		if (i%6==1) {
-			tr = $('<tr>').appendTo(table);
+// Konstruktor-Funktion
+var lottoTipps = [];
+var zz=0;
+
+var initAll = function() {
+	$('#meldung').html('');
+	$('#fehler').html('');
+	$('#hinweis').html('');
+	$('#hallo').remove();
+	$('#gewinnzahlen').html('');
+	$('#auswertung').html('');
+	$('#ziehung').prop('disabled', false);
+	$('#ziehung').hide();
+	lottoTipps.length = 0;
+}
+
+var ziehung = function() {
+	erg = [];
+	zusatzzahl = 0;
+	while (erg.length < 7) {
+		z =  Math.floor((Math.random() * 45) + 1);
+		if ($.inArray(z,erg )<0) {
+					erg.push(z);
 		}
-		td = $('<td>').appendTo(tr).html(i);
 	}
-	return table;
+	return erg;
 };
 
-// Konstruktor-Funktion
 var Lotto = function() {
   this.alleZahlen = [];
-  this.gewaehlteZahlen = [];
-	this.alleTipps = false;
+	this.aktiveZahlen = [];
+	this.richtigeZahlen = [];
+	this.zusatzzahl = 'Zusatzzahl nicht erraten';
 	this.htmlNode = false;
   for (let i = 1; i < 46; i++) {
     this.alleZahlen.push(i);
@@ -32,30 +49,38 @@ var Lotto = function() {
 			if (i%6==1) {
 				tr = $('<tr>').appendTo(table);
 			}
-			td = $('<td>').appendTo(tr).html(i);
+			td = $('<td id="'+name+'-'+i+'">')
+				.appendTo(tr)
+				.click(function() {
+					$( this ).toggleClass('aktiviert');
+					ausgabe(name, $(this).html());
+				})
+				.attr('data-name',name)
+				.attr('data-wert',i)
+				.html(i);
 		}
-	this.htmlNode = table;
 
+	this.htmlNode = table;
 	this.htmlNode.appendTo(ziel);
 
-	}
+	} // erzeugeTippTabellen
 
 }; // Lotto
 $( document ).on( 'click', '#tipp', function(event) {
   event.preventDefault();
-	var lottoTipps = [];
+	initAll();
   if (isNaN($('#anz').val())) {
-    $('#meldung').html('Anzahl ist nicht nummerisch')
+    $('#fehler').html('Anzahl ist nicht nummerisch')
   }else if ($('#anz').val() < 1 | $('#anz').val() > 10) {
-    $('#meldung').html('Die Anzahl der Tipps muss zwischen 1 und 10 liegen')
+    $('#fehler').html('Die Anzahl der Tipps muss zwischen 1 und 10 liegen')
   }else{
     for (let i = 0; i < $('#anz').val(); i++) {
       lottoTipps.push(new Lotto());
     }; // for
   }; // else
 	// Tabellen ausgeben
-	$('#hallo').empty();
-	$('<table id="hallo">').appendTo('body');
+
+	$('<table id="hallo">').appendTo('#platzhalter');
 
 	for (var i = 0; i < lottoTipps.length; i++) {
 		if (i%5==0) {
@@ -66,13 +91,89 @@ $( document ).on( 'click', '#tipp', function(event) {
 						.appendTo('#'+rowId)
 						.css({'border': '1px solid black'});
 		lottoTipps[i].erzeugeTippTabellen(i, '#'+rowId + '-' + i);
-	}
-
+	};
 
 }); // on click tipp
+var ausgabe = function(name, zz){
+	var id = '#' + name + '-' + zz;
+	var pos = $.inArray(zz, lottoTipps[name].aktiveZahlen);
+	$('#fehler').html('');
+	if (pos >= 0) {
+		lottoTipps[name].aktiveZahlen.splice( pos, 1 );
+	}else if (lottoTipps[name].aktiveZahlen.length < 6) {
+		lottoTipps[name].aktiveZahlen.push(zz);
+	}else{
+		$(id).removeClass();
+		$('#fehler').html('Pro Spielschein sind nur 6 Tipps zulässig');
+	}
+	var anzahl = lottoTipps.length*6;
+	for (let i = 0; i < lottoTipps.length; i++) {
+		anzahl = anzahl - lottoTipps[i].aktiveZahlen.length;
+	}
+	if (anzahl == 0) {
+		$('#hinweis').html('');
+		$('#ziehung').show();
+		console.log('Ferdl:', 'Alle Zahlen fertig');
+	}else {
+		console.log('Ferdl:', anzahl);
+		$('#hinweis').html('Es fehlen noch ' + anzahl + ' Tipps.')
+	}
+
+}
+
+$( document ).on( 'click', '#ziehung', function(event) {
+  event.preventDefault();
+	ergebnis = [];
+	zahlen = [];
+	zusatzzahl = 0;
+	$('#ziehung').prop('disabled', true);
+
+	ergebnis = ziehung();
+	for (let i = 0; i < ergebnis.length-1; i++) {
+		zahlen.push(ergebnis[i]);
+	}
+	zusatzzahl = ergebnis[ergebnis.length-1];
+	zahlen.sort(function(a, b){return a-b});
+
+	$('<tr>')
+		.append($('<td>').html('Gewinnzahlen: '))
+		.append($('<td>').html(zahlen[0]))
+		.append($('<td>').html(zahlen[1]))
+		.append($('<td>').html(zahlen[2]))
+		.append($('<td>').html(zahlen[3]))
+		.append($('<td>').html(zahlen[4]))
+		.append($('<td>').html(zahlen[5]))
+		.append($('<td>').html('Zusatzzahl: '))
+		.append($('<td>').html(zusatzzahl))
+		.appendTo('#gewinnzahlen');
+
+
+	for (let i = 0; i < lottoTipps.length; i++) {
+		for (let j = 0; j < lottoTipps[i].aktiveZahlen.length; j++) {
+			if ($.inArray(lottoTipps[i].aktiveZahlen[j]*1, zahlen)>=0) {
+				lottoTipps[i].richtigeZahlen.push(lottoTipps[i].aktiveZahlen[j]);
+			}
+			if (lottoTipps[i].aktiveZahlen[j]*1 == zusatzzahl){
+				lottoTipps[i].zusatzzahl = 'Zusatzzahl richtig';
+			}
+		};
+		var anzahlRichtige = lottoTipps[i].richtigeZahlen.length;
+		$('<tr>')
+			.append($('<td>').html('Tipp-'+i+1+': ' ))
+			.append($('<td>').html( anzahlRichtige + ' richtige' ))
+			.append($('<td>').html(lottoTipps[i].richtigeZahlen[0]))
+			.append($('<td>').html(lottoTipps[i].richtigeZahlen[1]))
+			.append($('<td>').html(lottoTipps[i].richtigeZahlen[2]))
+			.append($('<td>').html(lottoTipps[i].richtigeZahlen[3]))
+			.append($('<td>').html(lottoTipps[i].richtigeZahlen[4]))
+			.append($('<td>').html(lottoTipps[i].richtigeZahlen[5]))
+			.append($('<td>').html(lottoTipps[i].zusatzzahl))
+			.appendTo('#auswertung');
+	};
 
 
 
+});
 
 	</script>
 	<style>
@@ -82,6 +183,13 @@ $( document ).on( 'click', '#tipp', function(event) {
 .aktiviert{
 	color: red;
 }
+#hinweis{
+	background: #7DB47D;
+}
+#fehler{
+	background: #B47D7D;
+}
+
 	</style>
 </head>
 <body>
@@ -90,9 +198,13 @@ $( document ).on( 'click', '#tipp', function(event) {
   Anzahl Tipps 1 - 10 <input type="text" id="anz">
   <button id="tipp">Starten</button>
 </fieldset>
-
-<div id="meldung"></div>
-<table id="tables">
-</div>
+<span id="platzhalter"></span>
+<div id="hinweis"></div>
+<div id="fehler"></div>
+<input type='button' value='Lottoziehung starten ...' id='ziehung' hidden>
+<table id="gewinnzahlen">
+</table>
+<table id="auswertung">
+</table>
 </body>
 </html>
