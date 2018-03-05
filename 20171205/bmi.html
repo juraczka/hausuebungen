@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+
+	<title>Aufgabe_20171205</title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+
+	<script>
+var pos_x = function(cm, kg){
+  //45 ist ganz links
+  x_pos = 105 + ((cm-160)*10);
+  y_pos = 395 - ((kg-40)*3.0375);
+  $('#x').css({left: x_pos, top: y_pos+'px'});
+  $('#x').show();
+}
+
+    $( document ).on( 'click', '#berechne', function(event) {
+      event.preventDefault();
+      if (isNaN($('#groesse').val()) | isNaN($('#gewicht').val())) {
+          $( '#ergebnis' ).html( 'Eingabe nicht nummerisch' );
+      }else if ($('#groesse').val() > 200 | $('#groesse').val() < 160 ) {
+          $( '#ergebnis' ).html( 'Größe (cm) muss zwischen 160 und 200 liegen' );
+      }else if ($('#gewicht').val() > 120 | $('#gewicht').val() < 40) {
+          $( '#ergebnis' ).html( 'Gewicht (kg) muss zwischen 40 und 120 liegen' );
+      }else {
+        var groesse = $('#groesse').val()/100;
+        var groesse2 = groesse**2;
+        var gewicht = $('#gewicht').val();
+        var ergebnis = gewicht/groesse2;
+        erg = Math.round( ergebnis*1000 ) / 1000;
+        $( '#ergebnis' ).html( 'Dein Body-Mass-Index: ' + erg );
+
+        pos_x(groesse*100, gewicht);
+        //$('#berechne').attr('disabled', 'disabled');
+      }
+    });
+
+	</script>
+	<style>
+#ergebnis{
+  color: red;
+}
+#image{
+  position: fixed;
+  left: 50px;
+  top: 150px;
+  width: 496px;
+  height: 301px;
+}
+#x{
+  position: absolute;
+  left: 45px;
+  top: 441px;
+  color: red;
+}
+	</style>
+</head>
+<body>
+  <form action="?">
+    <input id="groesse" type="text" placeholder="Körpergröße in cm">
+    <input id="gewicht" type="text" placeholder="Gewicht in kg"><br>
+
+    <button id="berechne">BMI berechnen</button>
+    <input type="reset" value="Neue Berechnung">
+  </form>
+  <hr>
+  <div id="ergebnis"></div>
+  <br>
+  <div id="image"><img src="bmi_tabelle.gif"</img></div>
+  <span id="x" hidden>x</span>
+
+
+
+</body>
+</html>

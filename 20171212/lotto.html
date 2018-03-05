@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+	<script>
+
+var erzeugeTippTabellen = function(){
+	var td, tr, table = $('<table>');
+	for (var i = 1; i < 46; i++) {
+		if (i%6==1) {
+			tr = $('<tr>').appendTo(table);
+		}
+		td = $('<td>').appendTo(tr).html(i);
+	}
+	return table;
+};
+
+// Konstruktor-Funktion
+var Lotto = function() {
+  this.alleZahlen = [];
+  this.gewaehlteZahlen = [];
+	this.alleTipps = false;
+	this.htmlNode = false;
+  for (let i = 1; i < 46; i++) {
+    this.alleZahlen.push(i);
+  }
+	this.erzeugeTippTabellen = function(name, ziel){
+		var td, tr, table = $('<table id="'+name+'">');
+		for (var i = 1; i < 46; i++) {
+			if (i%6==1) {
+				tr = $('<tr>').appendTo(table);
+			}
+			td = $('<td>').appendTo(tr).html(i);
+		}
+	this.htmlNode = table;
+
+	this.htmlNode.appendTo(ziel);
+
+	}
+
+}; // Lotto
+$( document ).on( 'click', '#tipp', function(event) {
+  event.preventDefault();
+	var lottoTipps = [];
+  if (isNaN($('#anz').val())) {
+    $('#meldung').html('Anzahl ist nicht nummerisch')
+  }else if ($('#anz').val() < 1 | $('#anz').val() > 10) {
+    $('#meldung').html('Die Anzahl der Tipps muss zwischen 1 und 10 liegen')
+  }else{
+    for (let i = 0; i < $('#anz').val(); i++) {
+      lottoTipps.push(new Lotto());
+    }; // for
+  }; // else
+	// Tabellen ausgeben
+	$('#hallo').empty();
+	$('<table id="hallo">').appendTo('body');
+
+	for (var i = 0; i < lottoTipps.length; i++) {
+		if (i%5==0) {
+			var rowId = 'row' + i;
+			$('<tr id="' + rowId + '">').appendTo('#hallo');
+		}
+		$('<td id="' +rowId + '-' + i + '">')
+						.appendTo('#'+rowId)
+						.css({'border': '1px solid black'});
+		lottoTipps[i].erzeugeTippTabellen(i, '#'+rowId + '-' + i);
+	}
+
+
+}); // on click tipp
+
+
+
+
+	</script>
+	<style>
+#hallo {
+    border: 1px solid red;
+}
+.aktiviert{
+	color: red;
+}
+	</style>
+</head>
+<body>
+<h1>Willkommen bei Lotto 6 aus 45</h1>
+<fieldset>
+  Anzahl Tipps 1 - 10 <input type="text" id="anz">
+  <button id="tipp">Starten</button>
+</fieldset>
+
+<div id="meldung"></div>
+<table id="tables">
+</div>
+</body>
+</html>

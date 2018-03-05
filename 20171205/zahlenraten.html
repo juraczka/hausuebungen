@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+
+	<title>Aufgabe_20171205</title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+
+	<script>
+var ziel = 0;
+var versuchszaehler = 0;
+var zufallszahl = function(range){
+  return Math.floor((Math.random() * range) + 1);;
+}
+
+    $( document ).on( 'click', '#spiele', function(event) {
+      event.preventDefault();
+			$('#ausgabe').empty();
+			$('#ratezahl').val('');
+
+			var range=0;
+			if ($('#10').prop('checked')) {
+				range=10;
+			}else if ($('#25').prop('checked')) {
+				range=25;
+			}else if ($('#50').prop('checked')) {
+				range=50;
+			}
+			ziel = zufallszahl(range);
+			//$('#spiele').attr('disabled', 'disabled');
+      //$('#ausgabe').html('Aus dem Bereich Zahlen 1 - ' + range + ': ' + zufallszahl(range));
+    });
+		$( document ).on( 'click', '#rate', function(event) {
+      event.preventDefault();
+			versuchszaehler++;
+			var ratezahl = $('#ratezahl').val();
+			if (isNaN(ratezahl)) {
+				$('#ausgabe').html('Eingabe ist nicht nummerisch');
+				versuchszaehler--;
+			}else if (ratezahl < ziel) {
+				$('#ausgabe').html('Zu klein geraten');
+			}else if (ratezahl > ziel) {
+				$('#ausgabe').html('Zu groß geraten');
+			}else if (ratezahl=ziel) {
+				$('#ausgabe').html('Gratuliere die Zahl ist ' + ziel + ' => Anzahl Versuche: ' + versuchszaehler);
+			};
+		});
+
+	</script>
+	<style>
+#ergebnis{
+  color: red;
+}
+
+	</style>
+</head>
+<body>
+  <form action="?">
+    <fieldset>
+			<input id="10" name="kategorie" type="radio" checked>1 - 10</input><br>
+			<input id="25" name="kategorie" type="radio">1 - 25</input><br>
+			<input id="50" name="kategorie" type="radio">1 - 50</input>
+		</fieldset>
+    <button id="spiele">Spiel starten</button>
+  </form>
+  <hr>
+	<fieldset>
+		<input id="ratezahl" type="text" palceholder="Deine Zahl"><br>
+		<button id="rate">Zahl prüfen</button>
+	</fieldset>
+
+  <div id="ausgabe"></div>
+
+
+
+
+</body>
+</html>
