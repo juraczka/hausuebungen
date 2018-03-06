@@ -20,6 +20,14 @@ var initAll = function() {
 	$('#ziehung').prop('disabled', false);
 	$('#ziehung').hide();
 	lottoTipps.length = 0;
+	// Check browser support
+	if (typeof(Storage) !== "undefined") {
+	    // Retrieve
+	    var zuletztGespeichert = localStorage.getItem("lastTipps");
+	} else {
+	    document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
+	}
+	console.log(zuletztGespeichert);
 }
 
 var ziehung = function() {
@@ -113,6 +121,14 @@ var ausgabe = function(name, zz){
 	if (anzahl == 0) {
 		$('#hinweis').html('');
 		$('#ziehung').show();
+		for (let s = 0; s < lottoTipps.length; s++) {
+			if (typeof(Storage) !== "undefined") {
+			    // Store
+			    localStorage.setItem("lastTipps", lottoTipps[s].aktiveZahlen);
+			} else {
+			    document.getElementById("result").innerHTML = "Kein Web Storage verfügbar ...";
+			}
+		};
 	}else {
 		$('#hinweis').html('Es fehlen noch ' + anzahl + ' Tipps.')
 	}
