@@ -20,14 +20,6 @@ var initAll = function() {
 	$('#ziehung').prop('disabled', false);
 	$('#ziehung').hide();
 	lottoTipps.length = 0;
-	// Check browser support
-	if (typeof(Storage) !== "undefined") {
-	    // Retrieve
-	    var zuletztGespeichert = localStorage.getItem("lastTipps");
-	} else {
-	    document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
-	}
-	console.log(zuletztGespeichert);
 }
 
 var ziehung = function() {
@@ -48,8 +40,8 @@ var Lotto = function() {
 	this.richtigeZahlen = [];
 	this.zusatzzahl = 'Zusatzzahl nicht erraten';
 	this.htmlNode = false;
-  for (let i = 1; i < 46; i++) {
-    this.alleZahlen.push(i);
+  for (var a = 1; a < 46; a++) {
+    this.alleZahlen.push(a);
   }
 	this.erzeugeTippTabellen = function(name, ziel){
 		var td, tr, table = $('<table id="'+name+'">');
@@ -82,7 +74,7 @@ $( document ).on( 'click', '#tipp', function(event) {
   }else if ($('#anz').val() < 1 | $('#anz').val() > 10) {
     $('#fehler').html('Die Anzahl der Tipps muss zwischen 1 und 10 liegen')
   }else{
-    for (let i = 0; i < $('#anz').val(); i++) {
+    for (var x = 0; x < $('#anz').val(); x++) {
       lottoTipps.push(new Lotto());
     }; // for
   }; // else
@@ -115,20 +107,12 @@ var ausgabe = function(name, zz){
 		$('#fehler').html('Pro Spielschein sind nur 6 Tipps zulässig');
 	}
 	var anzahl = lottoTipps.length*6;
-	for (let i = 0; i < lottoTipps.length; i++) {
-		anzahl = anzahl - lottoTipps[i].aktiveZahlen.length;
+	for (var pos = 0; pos < lottoTipps.length; pos++) {
+		anzahl = anzahl - lottoTipps[pos].aktiveZahlen.length;
 	}
 	if (anzahl == 0) {
 		$('#hinweis').html('');
 		$('#ziehung').show();
-		for (let s = 0; s < lottoTipps.length; s++) {
-			if (typeof(Storage) !== "undefined") {
-			    // Store
-			    localStorage.setItem("lastTipps", lottoTipps[s].aktiveZahlen);
-			} else {
-			    document.getElementById("result").innerHTML = "Kein Web Storage verfügbar ...";
-			}
-		};
 	}else {
 		$('#hinweis').html('Es fehlen noch ' + anzahl + ' Tipps.')
 	}
@@ -143,7 +127,7 @@ $( document ).on( 'click', '#ziehung', function(event) {
 	$('#ziehung').prop('disabled', true);
 
 	ergebnis = ziehung();
-	for (let i = 0; i < ergebnis.length-1; i++) {
+	for (var i = 0; i < ergebnis.length-1; i++) {
 		zahlen.push(ergebnis[i]);
 	}
 	zusatzzahl = ergebnis[ergebnis.length-1];
@@ -162,8 +146,8 @@ $( document ).on( 'click', '#ziehung', function(event) {
 		.appendTo('#gewinnzahlen');
 
 
-	for (let i = 0; i < lottoTipps.length; i++) {
-		for (let j = 0; j < lottoTipps[i].aktiveZahlen.length; j++) {
+	for (var i = 0; i < lottoTipps.length; i++) {
+		for (var j = 0; j < lottoTipps[i].aktiveZahlen.length; j++) {
 			if ($.inArray(lottoTipps[i].aktiveZahlen[j]*1, zahlen)>=0) {
 				lottoTipps[i].richtigeZahlen.push(lottoTipps[i].aktiveZahlen[j]);
 			}
