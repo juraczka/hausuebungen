@@ -1,0 +1,58 @@
+Schnittstellen-Doku
+TODO-Verwaltung API
+
+E:\wifi\hausuebungen\20180130\server_restful.js
+http://localhost:3000
+
+todo = { 
+title:'betreff'
+text:'freitext'
+prio:1, range 1:10
+Anlagedatum min=now
+Erledigtdatum min=now
+erledigt: 0 / 1
+}
+data:{ value: JSON.stringify( todo ) }
+
+-- GET TODO DATA (alle)------------------------------
+GET
+  function:/restful/todo
+RESPONSE
+- DATATYPE: JSON
+- DATA (SUCCESS):
+   todo [ARRAY] 
+
+-- GET TODO DATA (ein Satz)--------------------------
+GET
+  function:/restful/todo/:id(id=eindeutige Satznummer)
+RESPONSE
+- DATATYPE: JSON
+- DATA (SUCCESS):
+   todo [ARRAY]
+
+-- SAVE TODO DATA (alle)-----------------------------
+POST
+  function:/restful/todo
+  value: JSON
+  data: todo [ARRAY]
+RESPONSE
+- DATATYPE: JSON
+- DATA (result:true):
+
+-- SAVE TODO DATA (ein Satz)-------------------------
+POST
+  function:/restful/todo/:id(id=eindeutige Satznummer)
+  value: JSON
+  data: todo [ARRAY]
+RESPONSE
+- DATATYPE: JSON
+- DATA (result:true):
+
+-- DELETE TODO DATA ----------------------------------
+DELETE
+  function:/restful/todo/:id(id=eindeutige Satznummer)
+  value: JSON
+  data: todo [ARRAY]
+RESPONSE
+- DATATYPE: JSON
+- DATA (result:true):
