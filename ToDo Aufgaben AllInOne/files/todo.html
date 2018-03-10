@@ -1,0 +1,232 @@
+<!doctype html>
+<html>
+<head>
+	<title>Restful</title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+	<script>
+
+var eingabefelderPruefen = function(todo){
+	$('#hinweis').html('');
+	$('#fehler').html('');
+	var heute = new Date().toISOString().substring(0, 10);
+
+	var fehler = [];
+	if (todo.titel.length == 0 | todo.titel == '<br>') {fehler.push('Titel ist leer')}
+	if (todo.text.length == 0 | todo.text == '<br>') {fehler.push('Text ist leer')}
+	if (todo.anlagedatum.length == 0 | todo.anlagedatum == '<br>') {fehler.push('Anlagedatum ist leer')}
+	if (todo.erledigungsdatum.length == 0 | todo.erledigungsdatum == '<br>') {fehler.push('Erledigungsdatum ist leer')}
+	if (isNaN(todo.prio)) {
+		fehler.push('"'+todo.prio+'"'+' Priorität nicht nummerisch')
+	}else{
+		todo.prio = todo.prio*1;
+	}
+	if (todo.prio <1 | todo.prio > 10) {
+		fehler.push('"'+todo.prio+'"'+' Priorität muss zwischen 1 und 10 liegen')
+	}
+	if (todo.anlagedatum < heute) {
+		fehler.push('"'+todo.anlagedatum+'"'+' Anlagedatum darf nicht in der Vergangenheit liegen')
+	}
+	if (todo.erledigungsdatum < heute) {
+		fehler.push('"'+todo.erledigungsdatum+'"'+' Erledigungsdatum darf nicht in der Vergangenheit liegen')
+	}
+	return fehler;
+}
+
+var deleteToDoListener = function( event ) {
+	event.preventDefault();
+	var id = $( this ).parent().parent().data( 'id' );
+	$.ajax({
+		url:'http://localhost:3000/restful/todo/'+id,
+		method:'DELETE',
+		success:function() {
+			getData();
+			$('#hinweis').html( 'ToDo - gelöscht' );
+		}
+	})
+};
+
+var editToDoListener = function( event ) {
+	event.preventDefault();
+
+	var id = $( this ).parent().parent().data( 'id' );
+	var todo = {
+		titel: $(this).parent().parent().find('td:nth-child(1)').html(),
+		text:$(this).parent().parent().find('td:nth-child(2)').html(),
+		prio:$(this).parent().parent().find('td:nth-child(3)').html(),
+		anlagedatum:$(this).parent().parent().find('td:nth-child(4)').html(),
+		erledigungsdatum:$(this).parent().parent().find('td:nth-child(5)').html(),
+	}
+	var fehler = eingabefelderPruefen(todo), text='';
+	console.log('FEHLER Satz: ', todo, ' Fehler:', fehler);
+	if (fehler.length > 0){
+		for (var i = 0; i < fehler.length; i++) {
+			text += fehler[i] + ' '
+		}
+		$('#fehler').html('Fehler: ' + text + ' ');
+	}else{
+		$.ajax({
+			url:'http://localhost:3000/restful/todo/'+id,
+			method:'PUT',
+			data:todo,
+			success:function(  ) {
+				$('#hinweis').html( 'ToDo geändert' );
+				getData();
+			}
+		});
+	}; // else
+};
+var getData = function() {
+	$.ajax({
+		url:'http://localhost:3000/restful/todo',
+		success:function( daten ) {
+			var alleToDos = daten.todo;
+			console.log( daten, alleToDos );
+
+			// cleanArray
+			var cleanToDos = [];
+			for ( var i in alleToDos ) {
+				if ( !alleToDos[i] ) continue;
+				alleToDos[i].id = i;
+				cleanToDos.push( alleToDos[i] );
+			}
+			alleToDos = cleanToDos;
+
+			console.log( alleToDos );
+
+
+			 	// sortieren
+			// sort != false, sort ==> Name der zu sortierenden Feldbezeichnung
+			if ( sort ) {
+				alleToDos.sort( function(a,b) {
+					if ( a[sort] > b[sort] ) return 1;
+					else return -1;
+				});
+			}
+
+
+			//if ( alleElefanten.length > 0 ) {
+			$( 'tr + tr + tr' ).remove();
+				for ( var i in alleToDos ) {
+					if ( !alleToDos[i] ) continue;
+					$( '<tr>' ).data('id', alleToDos[i].id).appendTo( 'table' )
+						.append(
+							$('<td contenteditable>').html( alleToDos[i].titel )
+						)
+						.append(
+							$('<td contenteditable>').html( alleToDos[i].text )
+						)
+						.append(
+							$('<td contenteditable>').html( alleToDos[i].prio )
+						)
+						.append(
+							$('<td contenteditable>').html( alleToDos[i].anlagedatum )
+						)
+						.append(
+							$('<td contenteditable>').html( alleToDos[i].erledigungsdatum )
+						)
+						.append(
+							$('<td>').append(
+								$( '<a href="#">löschen</a>' ).on( 'click', deleteToDoListener )
+							).append(' | ').append(
+								$( '<a href="#">editieren</a>' ).on( 'click', editToDoListener )
+							)
+						)
+						;
+				} // for
+			//} // if
+			if ( $( 'tr' ).length > 2 ) {
+				$( 'tr:nth-child(2)' ).hide();
+			} else {
+				$( 'tr:nth-child(2)' ).show();
+			}
+
+		} // success
+	}); // ajax
+}; // getDAta
+$( document ).ready( getData );
+/**
+* Daten speichern
+*/
+$( document ).on( 'submit', '#new', function(event) {
+	console.log( 'Formular submit' );
+	event.preventDefault();
+	var neuesToDo = {
+		titel: $( '#titel' ).val(),
+		text: $( '#text' ).val(),
+		prio: $( '#prio' ).val(),
+		anlagedatum: $( '#anlagedatum' ).val(),
+		erledigungsdatum: $( '#erledigungsdatum' ).val()
+	};
+	var fehler = eingabefelderPruefen(neuesToDo), text = '';
+	if (fehler.length > 0){
+		for (var i = 0; i < fehler.length; i++) {
+			text += fehler[i] + ' '
+		}
+		$('#fehler').html('Fehler: ' + text + ' ');
+	}else{
+		$.ajax( {
+			url:'http://localhost:3000/restful/todo',
+			method:'POST',
+			data:neuesToDo,
+			success:function() {
+				$( 'input' ).val('');
+				getData();
+				$('#hinweis').html( 'ToDo gespeichert' );
+			}
+		});
+	};
+}); // - Daten speichern
+
+var sort = false;
+$( document ).on( 'click','th',function() {
+	switch ( $(this).html() ) {
+		case 'Titel': sort = 'titel'; break;
+		case 'Text': sort = 'text'; break;
+		case 'Priorität': sort = 'prio'; break;
+		case 'Anlagedatum': sort = 'anlagedatum'; break;
+		case 'Erledigungsdatum': sort = 'erledigungsdatum'; break;
+	}
+	getData();
+});
+
+	</script>
+	<style>
+	* { font:20px Arial; }
+	th, td { border:1px solid #ddd; padding:8px; min-width:180px;  }
+	hr {border:none; margin:1em 10%; height:1px; background:#ddd; }
+	input { border:1px solid #ddd; padding:2px 10px; margin:5px; }
+	button { background:#ddd; border:none; padding:10px; }
+	h1 { font-weight:bold; font-size:25px; }
+	em { font-style:italic; }
+	#fehler {
+		color: red;
+	}
+	#hinweis {
+		color: green;
+	}
+	</style>
+</head>
+<body>
+
+	<h1>ToDo - Liste</h1>
+	<fieldset>
+		<form id="new">
+			<input type="text" id="titel">Titel<br>
+			<input type="text" id="text">Text<br>
+			<input type="text" id="prio">Priorität<br>
+			<input type="text" id="anlagedatum">Erstellungsdatum<br>
+			<input type="text" id="erledigungsdatum">Erledigungsdatum<br>
+			<button>Speichern</button>
+		</form>
+	<hr>
+	<div id="hinweis"></div>
+	<div id="fehler"></div>
+	<div id="ausgabe">
+		<table>
+			<tr><th>Titel</th><th>Text</th><th>Priorität</th><th>Erstellungsdatum</th><th>Erledigungsdatum</th></tr>
+			<tr><td colspan="2"><em>keine Daten vorhanden</em></td></tr>
+		</table>
+	</div>
+</body>
+</html>

@@ -15,7 +15,7 @@
 		// jquery Element von dem bildtext aufgerufen wird
 		return this.each( function() {
 				// this => HTML Node Element, Schleife each
-				$(this).on('mouseenter', function() {
+				$(this).on('click', function() {
 					// this => html Node Element vom EventListener
 					var alt = $( this ).attr('alt');
 					if ( settings.position == 'after' ) {
