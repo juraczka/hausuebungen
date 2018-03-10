@@ -56,6 +56,7 @@ var editToDoListener = function( event ) {
 		prio:$(this).parent().parent().find('td:nth-child(3)').html(),
 		anlagedatum:$(this).parent().parent().find('td:nth-child(4)').html(),
 		erledigungsdatum:$(this).parent().parent().find('td:nth-child(5)').html(),
+		erledigt:$(this).parent().parent().find('td:nth-child(6)').html(),
 	}
 	var fehler = eingabefelderPruefen(todo), text='';
 	console.log('FEHLER Satz: ', todo, ' Fehler:', fehler);
@@ -126,13 +127,15 @@ var getData = function() {
 							$('<td contenteditable>').html( alleToDos[i].erledigungsdatum )
 						)
 						.append(
+							$('<td contenteditable>').html( alleToDos[i].erledigt )
+						)
+						.append(
 							$('<td>').append(
 								$( '<a href="#">löschen</a>' ).on( 'click', deleteToDoListener )
 							).append(' | ').append(
 								$( '<a href="#">editieren</a>' ).on( 'click', editToDoListener )
 							)
-						)
-						;
+						);
 				} // for
 			//} // if
 			if ( $( 'tr' ).length > 2 ) {
@@ -156,7 +159,8 @@ $( document ).on( 'submit', '#new', function(event) {
 		text: $( '#text' ).val(),
 		prio: $( '#prio' ).val(),
 		anlagedatum: $( '#anlagedatum' ).val(),
-		erledigungsdatum: $( '#erledigungsdatum' ).val()
+		erledigungsdatum: $( '#erledigungsdatum' ).val(),
+		erledigt: $( '#erledigt' ).val()
 	};
 	var fehler = eingabefelderPruefen(neuesToDo), text = '';
 	if (fehler.length > 0){
@@ -186,6 +190,7 @@ $( document ).on( 'click','th',function() {
 		case 'Priorität': sort = 'prio'; break;
 		case 'Anlagedatum': sort = 'anlagedatum'; break;
 		case 'Erledigungsdatum': sort = 'erledigungsdatum'; break;
+		case 'Erledigt': sort = 'erledigt'; break;
 	}
 	getData();
 });
@@ -217,6 +222,7 @@ $( document ).on( 'click','th',function() {
 			<input type="text" id="prio">Priorität<br>
 			<input type="text" id="anlagedatum">Erstellungsdatum<br>
 			<input type="text" id="erledigungsdatum">Erledigungsdatum<br>
+			<input type="text" id="erledigt">Erledigt<br>
 			<button>Speichern</button>
 		</form>
 	<hr>
@@ -224,7 +230,7 @@ $( document ).on( 'click','th',function() {
 	<div id="fehler"></div>
 	<div id="ausgabe">
 		<table>
-			<tr><th>Titel</th><th>Text</th><th>Priorität</th><th>Erstellungsdatum</th><th>Erledigungsdatum</th></tr>
+			<tr><th>Titel</th><th>Text</th><th>Priorität</th><th>Erstellungsdatum</th><th>Erledigungsdatum</th><th>Erledigt</th></tr>
 			<tr><td colspan="2"><em>keine Daten vorhanden</em></td></tr>
 		</table>
 	</div>
